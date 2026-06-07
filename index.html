@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Google Review Automation | North Rank Media</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black:  #0a0a0a;
+    --dark:   #111111;
+    --dark2:  #181818;
+    --dark3:  #202020;
+    --gold:   #c9a84c;
+    --gold2:  #f0c96a;
+    --gold3:  #ffe4a0;
+    --silver: #b8bfc9;
+    --silver2:#d6dbe3;
+    --white:  #ffffff;
+    --muted:  #6a6a6a;
+    --muted2: #888;
+    --green:  #3dba6e;
+    --border: rgba(201,168,76,0.15);
+    --border2:rgba(255,255,255,0.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── PAGE ── */
+  .page { max-width: 420px; margin: 0 auto; padding-bottom: 64px; }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 52px 28px 44px;
+    background: radial-gradient(ellipse at 70% 0%, rgba(201,168,76,0.09) 0%, transparent 60%), var(--dark);
+    position: relative; overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: 0; left: 24px; right: 24px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.4;
+  }
+
+  /* logo SVG mark */
+  .logo-row { display: flex; align-items: center; gap: 13px; margin-bottom: 36px; }
+  .logo-svg { width: 46px; height: 46px; flex-shrink: 0; }
+  .logo-wordmark { line-height: 1; }
+  .logo-wordmark .north {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px;
+    letter-spacing: 0.12em;
+    background: linear-gradient(135deg, var(--gold2), var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .logo-wordmark .rank {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px;
+    letter-spacing: 0.12em;
+    background: linear-gradient(135deg, var(--silver2), var(--silver));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .logo-wordmark .media {
+    display: block; font-size: 9px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted2); margin-top: 3px;
+  }
+  .logo-stars { display: flex; gap: 2px; margin-top: 3px; }
+  .logo-stars span { font-size: 8px; color: var(--gold); }
+
+  .hero-eyebrow {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--gold); opacity: 0.6; }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: 36px; line-height: 1.0; letter-spacing: -0.5px;
+    margin-bottom: 18px;
+  }
+  .hero h1 .line-gold {
+    display: block;
+    background: linear-gradient(90deg, var(--gold2), var(--gold3));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero h1 .line-silver {
+    display: block;
+    background: linear-gradient(90deg, var(--silver2), var(--silver));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero h1 .line-white { display: block; color: white; }
+
+  .hero-sub {
+    font-size: 14px; line-height: 1.65; color: var(--muted2);
+    margin-bottom: 32px; max-width: 340px;
+  }
+
+  .hero-stats {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
+  }
+  .stat {
+    background: var(--dark2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 10px; text-align: center;
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; line-height: 1;
+    background: linear-gradient(135deg, var(--gold2), var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .stat-label { font-size: 10px; color: var(--muted2); margin-top: 5px; line-height: 1.3; }
+
+  /* ── SECTION ── */
+  .section { padding: 40px 24px 0; }
+  .section-label {
+    font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--gold); font-weight: 600; margin-bottom: 7px;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: 23px; line-height: 1.15; margin-bottom: 22px;
+  }
+  .section-title .t-gold {
+    background: linear-gradient(90deg, var(--gold2), var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .section-title .t-silver {
+    background: linear-gradient(90deg, var(--silver2), var(--silver));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+
+  /* ── PROBLEM CARDS ── */
+  .problem-cards { display: flex; flex-direction: column; gap: 10px; }
+  .problem-card {
+    background: var(--dark2); border: 1px solid var(--border2);
+    border-radius: 14px; padding: 16px 18px;
+    display: flex; align-items: flex-start; gap: 14px;
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+  .problem-card.visible { opacity: 1; transform: translateY(0); }
+  .problem-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+  .problem-text strong { display: block; font-size: 13.5px; font-weight: 600; color: var(--silver2); margin-bottom: 3px; }
+  .problem-text span { font-size: 12px; color: var(--muted2); line-height: 1.5; }
+
+  /* ── DEMO ── */
+  .demo-wrap {
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-radius: 20px; padding: 24px 20px;
+    position: relative; overflow: hidden;
+  }
+  .demo-wrap::before {
+    content: 'LIVE DEMO';
+    position: absolute; top: 14px; right: 14px;
+    font-size: 9px; letter-spacing: 0.14em; font-weight: 700;
+    color: var(--gold); background: rgba(201,168,76,0.1);
+    padding: 3px 9px; border-radius: 20px; border: 1px solid rgba(201,168,76,0.25);
+  }
+  .demo-wrap::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.4;
+  }
+  .demo-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 4px; color: var(--silver2); }
+  .demo-sub { font-size: 12px; color: var(--muted2); margin-bottom: 22px; }
+
+  /* phone */
+  .phone-wrap { display: flex; justify-content: center; margin-bottom: 20px; }
+  .phone {
+    width: 218px;
+    background: #111;
+    border-radius: 36px;
+    border: 6px solid #222;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(201,168,76,0.08), inset 0 0 0 1px rgba(255,255,255,0.04);
+    overflow: hidden;
+  }
+  .phone-notch {
+    width: 80px; height: 20px; background: #111;
+    border-radius: 0 0 14px 14px; margin: 0 auto; position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .phone-notch::after { content: ''; width: 40px; height: 4px; background: #222; border-radius: 4px; }
+  .phone-screen { background: #f0f0f0; min-height: 320px; }
+
+  .sms-header {
+    background: #fff; padding: 10px 12px 8px;
+    border-bottom: 1px solid #e5e5e5;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sms-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: linear-gradient(135deg, #c9a84c, #8a6a20);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800; color: white; flex-shrink: 0;
+    font-family: 'Syne', sans-serif;
+  }
+  .sms-contact strong { display: block; font-size: 12px; color: #111; font-weight: 600; }
+  .sms-contact span { font-size: 10px; color: #999; }
+  .sms-status { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); margin-left: auto; }
+
+  .sms-body { padding: 12px 10px; background: #f0f0f0; min-height: 260px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+
+  .bubble {
+    max-width: 84%; padding: 9px 11px; border-radius: 16px;
+    font-size: 11.5px; line-height: 1.45; color: #111;
+    opacity: 0; transform: translateY(8px); transition: opacity 0.4s, transform 0.4s;
+  }
+  .bubble.visible { opacity: 1; transform: translateY(0); }
+  .bubble.incoming { background: white; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .bubble.outgoing { background: #c9a84c; align-self: flex-end; border-bottom-right-radius: 4px; color: #111; }
+  .bubble-time { font-size: 9px; color: #aaa; margin-top: 2px; display: block; }
+  .bubble.outgoing .bubble-time { color: rgba(0,0,0,0.45); text-align: right; }
+
+  .typing-indicator {
+    background: white; align-self: flex-start; padding: 10px 14px;
+    border-radius: 16px; border-bottom-left-radius: 4px;
+    display: flex; gap: 4px; align-items: center;
+    opacity: 0; transition: opacity 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .typing-indicator.visible { opacity: 1; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: #bbb; animation: bounce 1.2s infinite; }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)} }
+
+  .demo-controls { display: flex; gap: 8px; margin-top: 16px; }
+  .demo-btn {
+    flex: 1; padding: 12px; border-radius: 10px; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+    transition: all 0.2s;
+  }
+  .demo-btn.primary {
+    background: linear-gradient(135deg, var(--gold2), var(--gold));
+    color: #111;
+  }
+  .demo-btn.primary:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,168,76,0.3); }
+  .demo-btn.primary:disabled { opacity: 0.6; cursor: default; }
+  .demo-btn.secondary { background: var(--dark3); color: var(--muted2); border: 1px solid var(--border2); }
+  .demo-btn.secondary:hover { color: var(--silver2); border-color: rgba(255,255,255,0.15); }
+
+  .demo-step-label { text-align: center; font-size: 11px; color: var(--muted2); margin-top: 12px; min-height: 16px; }
+
+  /* ── STEPS ── */
+  .steps { display: flex; flex-direction: column; position: relative; }
+  .steps::before {
+    content: ''; position: absolute; left: 21px; top: 22px; bottom: 22px; width: 1px;
+    background: linear-gradient(to bottom, var(--gold), rgba(201,168,76,0.05));
+  }
+  .step {
+    display: flex; gap: 16px; padding: 14px 0;
+    opacity: 0; transform: translateX(-12px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+  .step.visible { opacity: 1; transform: translateX(0); }
+  .step-num {
+    width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+    background: var(--dark2); border: 1.5px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px;
+    color: var(--gold2); position: relative; z-index: 1;
+    box-shadow: 0 0 0 4px var(--black);
+  }
+  .step-num.done {
+    background: linear-gradient(135deg, var(--gold2), var(--gold));
+    color: #111; border-color: var(--gold2);
+  }
+  .step-content { padding-top: 9px; flex: 1; }
+  .step-content strong { display: block; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--silver2); margin-bottom: 4px; }
+  .step-content p { font-size: 12.5px; color: var(--muted2); line-height: 1.55; }
+
+  /* ── REVIEW CARD ── */
+  .review-card {
+    background: white; border-radius: 16px; padding: 18px; color: #111;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,168,76,0.15);
+    opacity: 0; transform: translateY(20px) scale(0.97);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+  .review-card.visible { opacity: 1; transform: translateY(0) scale(1); }
+  .review-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .google-g {
+    width: 30px; height: 30px; border-radius: 6px; background: #4285f4;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 15px; color: white; font-family: 'Syne', sans-serif;
+  }
+  .review-brand { font-size: 13px; font-weight: 600; color: #333; }
+  .review-rating { display: flex; gap: 2px; margin: 6px 0 4px; }
+  .star { font-size: 17px; color: #f5c842; opacity: 0; transform: scale(0.5); transition: opacity 0.3s, transform 0.3s; }
+  .star.pop { opacity: 1; transform: scale(1); }
+  .review-author { font-size: 12px; color: #888; margin-bottom: 9px; }
+  .review-text { font-size: 13px; color: #333; line-height: 1.55; font-style: italic; }
+
+  .before-after {
+    display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px;
+    margin-top: 18px; align-items: center;
+  }
+  .ba-card {
+    border-radius: 12px; padding: 16px 12px; text-align: center;
+    opacity: 0; transform: scale(0.92); transition: opacity 0.5s, transform 0.5s;
+  }
+  .ba-card.visible { opacity: 1; transform: scale(1); }
+  .ba-card.before { background: var(--dark2); border: 1px solid var(--border2); }
+  .ba-card.after  { background: var(--dark2); border: 1px solid var(--border); }
+  .ba-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 30px; line-height: 1; }
+  .ba-card.before .ba-num { color: var(--muted2); }
+  .ba-card.after  .ba-num {
+    background: linear-gradient(135deg, var(--gold2), var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .ba-label { font-size: 10px; color: var(--muted2); margin-top: 5px; }
+  .ba-arrow { font-size: 20px; color: var(--gold); font-weight: 700; text-align: center; }
+
+  /* ── INCLUDES ── */
+  .includes { display: flex; flex-direction: column; gap: 10px; }
+  .include-item {
+    background: var(--dark2); border: 1px solid var(--border2);
+    border-radius: 14px; padding: 15px 16px;
+    display: flex; align-items: flex-start; gap: 13px;
+    opacity: 0; transform: translateX(16px); transition: opacity 0.5s, transform 0.5s;
+  }
+  .include-item.visible { opacity: 1; transform: translateX(0); }
+  .check-circle {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: rgba(61,186,110,0.1); border: 1.5px solid var(--green);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px; font-size: 11px; color: var(--green);
+  }
+  .include-text strong { display: block; font-size: 13px; font-weight: 600; color: var(--silver2); margin-bottom: 3px; }
+  .include-text span { font-size: 12px; color: var(--muted2); line-height: 1.45; }
+
+  /* ── CTA ── */
+  .cta-block {
+    margin: 40px 24px 0;
+    background: var(--dark2);
+    border: 1px solid var(--border);
+    border-radius: 22px; padding: 30px 24px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .cta-block::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.5;
+  }
+  .cta-block::after {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.07), transparent 70%);
+    pointer-events: none;
+  }
+  .cta-eyebrow { font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 12px; }
+  .cta-block h3 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 21px; margin-bottom: 10px; line-height: 1.2; }
+  .cta-block p { font-size: 13px; color: var(--muted2); margin-bottom: 22px; line-height: 1.6; }
+  .cta-btn {
+    display: block; width: 100%; padding: 15px;
+    background: linear-gradient(135deg, var(--gold2), var(--gold));
+    color: #111; border: none; border-radius: 12px;
+    font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800;
+    cursor: pointer; text-decoration: none; letter-spacing: 0.01em;
+    transition: all 0.2s;
+    box-shadow: 0 4px 24px rgba(201,168,76,0.25);
+  }
+  .cta-btn:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201,168,76,0.35); }
+  .cta-note { font-size: 11px; color: var(--muted); margin-top: 12px; }
+
+  /* ── FOOTER ── */
+  .footer { text-align: center; padding: 36px 24px 0; font-size: 11px; color: var(--muted); line-height: 1.8; }
+  .footer .brand {
+    background: linear-gradient(90deg, var(--gold2), var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    font-weight: 700;
+  }
+
+  /* ── SCROLL REVEALS ── */
+  .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s, transform 0.6s; }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  /* gold divider */
+  .gold-divider {
+    height: 1px; margin: 0 24px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.2), transparent);
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="logo-row">
+      <!-- NR monogram mark in SVG matching gold/silver split -->
+      <svg class="logo-svg" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="46" height="46" rx="10" fill="#181818"/>
+        <!-- M shape in gold -->
+        <path d="M6 34 L6 13 L14 26 L22 13 L22 34" stroke="url(#goldG)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <!-- Arrow up-right from M peak -->
+        <path d="M14 20 L28 8" stroke="url(#goldG)" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M28 8 L28 14 M28 8 L22 8" stroke="url(#goldG)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- R in silver -->
+        <path d="M26 13 L26 34 M26 13 L36 13 Q40 13 40 19 Q40 24 36 24 L26 24 L38 34" stroke="url(#silverG)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <defs>
+          <linearGradient id="goldG" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#f0c96a"/>
+            <stop offset="100%" stop-color="#c9a84c"/>
+          </linearGradient>
+          <linearGradient id="silverG" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#d6dbe3"/>
+            <stop offset="100%" stop-color="#b8bfc9"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="logo-wordmark">
+        <div><span class="north">NORTH</span><span class="rank">RANK</span></div>
+        <span class="media"· Media ·/span>
+        <div class="logo-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+      </div>
+    </div>
+
+    <div class="hero-eyebrow">Google Review Automation</div>
+    <h1>
+      <span class="line-white">More Reviews.</span>
+      <span class="line-gold">More Trust.</span>
+      <span class="line-silver">More Customers.</span>
+    </h1>
+    <p class="hero-sub">We build a simple system that automatically asks your happiest customers for a Google review, right after the job is done. Zero effort from you.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">30s</div><div class="stat-label">After job ends</div></div>
+      <div class="stat"><div class="stat-num">4×</div><div class="stat-label">More reviews</div></div>
+      <div class="stat"><div class="stat-num">0</div><div class="stat-label">Effort from you</div></div>
+    </div>
+  </div>
+
+  <!-- PROBLEM -->
+  <div class="section">
+    <div class="section-label">The Problem</div>
+    <div class="section-title">Happy customers don't<br>review <span class="t-gold">on their own.</span></div>
+    <div class="problem-cards">
+      <div class="problem-card scroll-reveal">
+        <div class="problem-icon">😮‍💨</div>
+        <div class="problem-text"><strong>They forget</strong><span>Life moves on. Even your best customers mean to leave a review and never get around to it.</span></div>
+      </div>
+      <div class="problem-card scroll-reveal" style="transition-delay:.1s">
+        <div class="problem-icon">🙋</div>
+        <div class="problem-text"><strong>Your team never asks</strong><span>Asking feels awkward. Staff skip it. There's no consistent follow-up in place.</span></div>
+      </div>
+      <div class="problem-card scroll-reveal" style="transition-delay:.2s">
+        <div class="problem-icon">📉</div>
+        <div class="problem-text"><strong>Competitors look better</strong><span>A business with 200 reviews wins on first impression, even if your work is better.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gold-divider" style="margin-top:40px;"></div>
+
+  <!-- LIVE DEMO -->
+  <div class="section">
+    <div class="section-label">See It In Action</div>
+    <div class="section-title">Watch the<br><span class="t-gold">automation run.</span></div>
+    <div class="demo-wrap">
+      <div class="demo-title">Live SMS Demo</div>
+      <div class="demo-sub">Hit Start to see exactly what your customer receives.</div>
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="sms-header">
+              <div class="sms-avatar">NR</div>
+              <div class="sms-contact">
+                <strong>North Rank Media</strong>
+                <span>Business</span>
+              </div>
+              <div class="sms-status"></div>
+            </div>
+            <div class="sms-body" id="smsBody"></div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-controls">
+        <button class="demo-btn primary" id="demoBtn" onclick="runDemo()">▶ Start Demo</button>
+        <button class="demo-btn secondary" onclick="resetDemo()">↺ Reset</button>
+      </div>
+      <div class="demo-step-label" id="stepLabel">Press Start to run the automation</div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="section">
+    <div class="section-label">How It Works</div>
+    <div class="section-title">4 steps.<br><span class="t-silver">Zero effort from you.</span></div>
+    <div class="steps">
+      <div class="step scroll-reveal">
+        <div class="step-num">1</div>
+        <div class="step-content"><strong>Job is completed</strong><p>Customer is marked complete in your system, or added to a simple list. That's the trigger.</p></div>
+      </div>
+      <div class="step scroll-reveal" style="transition-delay:.1s">
+        <div class="step-num">2</div>
+        <div class="step-content"><strong>Personalized message sends</strong><p>A thank-you text goes out with their first name and a direct Google review link, automatically within seconds.</p></div>
+      </div>
+      <div class="step scroll-reveal" style="transition-delay:.2s">
+        <div class="step-num">3</div>
+        <div class="step-content"><strong>Customer leaves an honest review</strong><p>One tap takes them straight to your Google page. No searching. No friction.</p></div>
+      </div>
+      <div class="step scroll-reveal" style="transition-delay:.3s">
+        <div class="step-num done">4</div>
+        <div class="step-content"><strong>Your reputation grows</strong><p>Fresh reviews stack up every month. You get a monthly report showing the lift.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gold-divider" style="margin-top:40px;"></div>
+
+  <!-- RESULT -->
+  <div class="section">
+    <div class="section-label">The Result</div>
+    <div class="section-title">What it looks like<br><span class="t-gold">on Google.</span></div>
+    <div class="review-card scroll-reveal" id="reviewCard">
+      <div class="review-top">
+        <div class="google-g">G</div>
+        <div class="review-brand">Google Review</div>
+      </div>
+      <div class="review-rating" id="stars">
+        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+      </div>
+      <div class="review-author">Jason M. &nbsp;·&nbsp; <span>2 days ago</span></div>
+      <div class="review-text">"North Rank helped us go from 27 reviews to over 127 in just 60 days. Our phone hasn't stopped ringing since. Highly recommend!"</div>
+    </div>
+    <div class="before-after">
+      <div class="ba-card before scroll-reveal">
+        <div class="ba-num">27</div>
+        <div class="ba-label">Reviews before</div>
+      </div>
+      <div class="ba-arrow">→</div>
+      <div class="ba-card after scroll-reveal" style="transition-delay:.15s">
+        <div class="ba-num">127</div>
+        <div class="ba-label">After 60 days</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INCLUDES -->
+  <div class="section">
+    <div class="section-label">What's Included</div>
+    <div class="section-title">Everything set up.<br><span class="t-gold">Done for you.</span></div>
+    <div class="includes">
+      <div class="include-item scroll-reveal">
+        <div class="check-circle">✓</div>
+        <div class="include-text"><strong>Personalized SMS Review Requests</strong><span>First name, custom message, direct Google link. Feels personal, sends automatically.</span></div>
+      </div>
+      <div class="include-item scroll-reveal" style="transition-delay:.08s">
+        <div class="check-circle">✓</div>
+        <div class="include-text"><strong>Past Customer Campaign</strong><span>We reactivate your existing customer list and get reviews from people who already trust you.</span></div>
+      </div>
+      <div class="include-item scroll-reveal" style="transition-delay:.16s">
+        <div class="check-circle">✓</div>
+        <div class="include-text"><strong>Missed-Call Text Back</strong><span>Never lose a lead to voicemail. Instant reply keeps them from calling your competitor.</span></div>
+      </div>
+      <div class="include-item scroll-reveal" style="transition-delay:.24s">
+        <div class="check-circle">✓</div>
+        <div class="include-text"><strong>Monthly Review Report</strong><span>A clean report showing your review growth and star rating trend each month.</span></div>
+      </div>
+      <div class="include-item scroll-reveal" style="transition-delay:.32s">
+        <div class="check-circle">✓</div>
+        <div class="include-text"><strong>Full Setup: No Tech Skills Needed</strong><span>We build it, connect it, and maintain it. You just keep doing great work.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-block fade-up">
+    <div class="cta-eyebrow">Free 15-Minute Call</div>
+    <h3>See What This Looks Like for Your Business</h3>
+    <p>We'll show you your current review gap and exactly what the system would look like for you. No commitment needed.</p>
+    <a href="https://northrankmedia.com/#demo-form" class="cta-btn">Book a Free Demo →</a>
+    <div class="cta-note">No contracts · No pressure · Local businesses only</div>
+  </div>
+
+  <div class="footer">
+    <span class="brand">North Rank Media</span><br>
+    Oxford, Mississippi<br>
+    Helping local businesses win online.
+  </div>
+
+</div>
+
+<script>
+  // Scroll reveals
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        if (e.target.id === 'reviewCard') popStars();
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.scroll-reveal, .fade-up').forEach(el => io.observe(el));
+
+  function popStars() {
+    document.querySelectorAll('.star').forEach((s, i) => setTimeout(() => s.classList.add('pop'), i * 90));
+  }
+
+  // SMS demo
+  const steps = [
+    { delay: 0,    type: 'incoming', text: 'Job completed ✓\nCustomer: Jason M.\nService: Pressure Washing\nStatus: Marked complete', time: 'System trigger · just now', label: 'Step 1: Job marked complete, trigger fires' },
+    { delay: 1100, type: 'typing',   label: 'Step 2: Automation preparing your message...' },
+    { delay: 2700, type: 'outgoing', text: 'Hey Jason, thanks so much for choosing Sunrise Pressure Washing! 🙌\n\nIf you have 30 seconds, would you mind leaving us a quick Google review? It really helps our business.\n\n👇 Your link:\ngoogle.com/review/sunrise', time: 'Auto-sent · 0:31 after job', label: 'Step 2: Personalized SMS sent automatically' },
+    { delay: 4800, type: 'incoming', text: 'Sure thing! Just left you a 5-star review 😊', time: 'Jason · 4 min later', label: 'Step 3: Customer replies and leaves review' },
+    { delay: 6000, type: 'outgoing', text: 'That means the world to us, Jason. Thank you! 🌟\n\nSee you next season!', time: 'Auto-reply · sent', label: '✅ Done: New 5-star review live on Google' },
+  ];
+
+  let running = false, timeouts = [];
+
+  function runDemo() {
+    if (running) return;
+    running = true;
+    document.getElementById('demoBtn').disabled = true;
+    document.getElementById('demoBtn').textContent = '⏳ Running...';
+    const body = document.getElementById('smsBody');
+
+    steps.forEach((step, i) => {
+      const t = setTimeout(() => {
+        document.getElementById('stepLabel').textContent = step.label;
+        const old = body.querySelector('.typing-indicator');
+        if (old) old.remove();
+
+        if (step.type === 'typing') {
+          const ind = document.createElement('div');
+          ind.className = 'typing-indicator';
+          ind.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+          body.appendChild(ind);
+          setTimeout(() => ind.classList.add('visible'), 50);
+        } else {
+          const b = document.createElement('div');
+          b.className = `bubble ${step.type}`;
+          b.innerHTML = step.text.replace(/\n/g, '<br>') + `<span class="bubble-time">${step.time || ''}</span>`;
+          body.appendChild(b);
+          setTimeout(() => b.classList.add('visible'), 50);
+          body.scrollTop = body.scrollHeight;
+        }
+        if (i === steps.length - 1) {
+          document.getElementById('demoBtn').textContent = '✓ Complete';
+        }
+      }, step.delay);
+      timeouts.push(t);
+    });
+  }
+
+  function resetDemo() {
+    timeouts.forEach(clearTimeout);
+    timeouts = []; running = false;
+    document.getElementById('smsBody').innerHTML = '';
+    document.getElementById('stepLabel').textContent = 'Press Start to run the automation';
+    const btn = document.getElementById('demoBtn');
+    btn.disabled = false;
+    btn.textContent = '▶ Start Demo';
+  }
+</script>
+</body>
+</html>

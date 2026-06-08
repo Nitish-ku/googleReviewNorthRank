@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(\\(Get-Content \"D:\\\\northRank\\\\gReviewNorthRank\\\\index.html\"\\) -replace \"'Syne', sans-serif\", \"'Plus Jakarta Sans', sans-serif\" -replace \"'DM Sans', sans-serif\", \"'Inter', sans-serif\" | Set-Content \"D:\\\\northRank\\\\gReviewNorthRank\\\\index.html\" -Encoding utf8)"
+    ]
+  }
+}
